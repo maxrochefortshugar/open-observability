@@ -1,0 +1,29 @@
+{
+  "name": "@open-observability/sdk",
+  "version": "0.1.0",
+  "description": "Server-side SDK for querying open-observability analytics data",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-observability/open-observability.git",
+    "directory": "packages/sdk"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.42.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.3.0"
+  }
+}

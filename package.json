@@ -1,0 +1,37 @@
+{
+  "name": "open-observability",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source web application metrics collection platform",
+  "author": "open-observability contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-observability/open-observability.git"
+  },
+  "workspaces": [
+    "packages/tracker",
+    "packages/sdk",
+    "packages/dashboard"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:tracker": "npm run build -w packages/tracker",
+    "build:sdk": "npm run build -w packages/sdk",
+    "build:dashboard": "npm run build -w packages/dashboard",
+    "dev:dashboard": "npm run dev -w packages/dashboard",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:migrate": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > packages/sdk/src/database.types.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "prettier": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
