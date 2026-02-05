@@ -1,0 +1,15 @@
+spec:
+  name: open-observability
+  static_sites:
+    - name: dashboard
+      build_command: npm ci && npm run build:sdk && npm run build:dashboard
+      output_dir: packages/dashboard/out
+      catchall_document: index.html
+      environment_slug: node-js
+      envs:
+        - key: NEXT_PUBLIC_SUPABASE_URL
+          type: BUILD_TIME
+          value: ${NEXT_PUBLIC_SUPABASE_URL}
+        - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+          type: BUILD_TIME
+          value: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}

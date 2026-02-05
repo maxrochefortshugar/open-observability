@@ -21,7 +21,12 @@
  * ```
  */
 
-import { SupabaseBackend, type SupabaseBackendConfig } from './backends/supabase';
+import {
+  SupabaseBackend,
+  type SupabaseBackendConfig,
+  type SupabaseBackendCredentialsConfig,
+  type SupabaseBackendClientConfig,
+} from './backends/supabase';
 import type { AnalyticsBackend } from './types';
 
 export type { AnalyticsBackend } from './types';
@@ -40,12 +45,21 @@ export type {
   VitalSummary,
 } from './types';
 export { SupabaseBackend } from './backends/supabase';
-export type { SupabaseBackendConfig } from './backends/supabase';
+export type {
+  SupabaseBackendConfig,
+  SupabaseBackendCredentialsConfig,
+  SupabaseBackendClientConfig,
+} from './backends/supabase';
 
 /**
  * Configuration for creating an analytics client.
+ *
+ * Supabase backend accepts either URL + key credentials or an existing
+ * SupabaseClient instance (useful in browser contexts with @supabase/ssr).
  */
-export type AnalyticsClientConfig = { backend: 'supabase' } & SupabaseBackendConfig;
+export type AnalyticsClientConfig =
+  | ({ backend: 'supabase' } & SupabaseBackendCredentialsConfig)
+  | ({ backend: 'supabase' } & SupabaseBackendClientConfig);
 
 /**
  * Create an analytics client with the specified backend.
@@ -57,6 +71,9 @@ export type AnalyticsClientConfig = { backend: 'supabase' } & SupabaseBackendCon
 export function createAnalyticsClient(config: AnalyticsClientConfig): AnalyticsBackend {
   switch (config.backend) {
     case 'supabase':
+      if ('client' in config) {
+        return new SupabaseBackend({ client: config.client });
+      }
       return new SupabaseBackend({
         supabaseUrl: config.supabaseUrl,
         supabaseKey: config.supabaseKey,

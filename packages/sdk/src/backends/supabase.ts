@@ -21,24 +21,34 @@ import type {
   PageViewStats,
 } from '../types';
 
-export interface SupabaseBackendConfig {
-  /**
-   * Supabase project URL.
-   * Example: "https://<project>.supabase.co"
-   */
+/**
+ * Configuration using URL + key (creates a new Supabase client internally).
+ */
+export interface SupabaseBackendCredentialsConfig {
   supabaseUrl: string;
-
-  /**
-   * Supabase service role key (for server-side usage) or anon key.
-   */
   supabaseKey: string;
 }
+
+/**
+ * Configuration using an existing Supabase client instance.
+ * Useful when the caller already holds an authenticated client
+ * (e.g. from @supabase/ssr in a browser context).
+ */
+export interface SupabaseBackendClientConfig {
+  client: SupabaseClient;
+}
+
+export type SupabaseBackendConfig = SupabaseBackendCredentialsConfig | SupabaseBackendClientConfig;
 
 export class SupabaseBackend implements AnalyticsBackend {
   private client: SupabaseClient;
 
   constructor(config: SupabaseBackendConfig) {
-    this.client = createClient(config.supabaseUrl, config.supabaseKey);
+    if ('client' in config) {
+      this.client = config.client;
+    } else {
+      this.client = createClient(config.supabaseUrl, config.supabaseKey);
+    }
   }
 
   async getPageViews(siteId: string, range: DateRange, limit = 100): Promise<PageView[]> {

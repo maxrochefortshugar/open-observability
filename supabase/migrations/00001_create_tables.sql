@@ -7,15 +7,12 @@
 --   - errors: JavaScript error events
 --   - custom_events: user-defined custom events
 
--- Enable UUID generation
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- ============================================================
 -- Page Views
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS page_views (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   site_id       TEXT NOT NULL,
   url           TEXT NOT NULL,
   pathname      TEXT NOT NULL,
@@ -42,7 +39,7 @@ CREATE INDEX idx_page_views_site_pathname
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS web_vitals (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   site_id         TEXT NOT NULL,
   url             TEXT NOT NULL,
   pathname        TEXT NOT NULL,
@@ -75,7 +72,7 @@ CREATE UNIQUE INDEX idx_web_vitals_dedup
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS errors (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   site_id         TEXT NOT NULL,
   url             TEXT NOT NULL,
   pathname        TEXT NOT NULL,
@@ -104,7 +101,7 @@ CREATE INDEX idx_errors_site_message
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS custom_events (
-  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   site_id         TEXT NOT NULL,
   url             TEXT NOT NULL,
   pathname        TEXT NOT NULL,

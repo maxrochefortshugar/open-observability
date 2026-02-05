@@ -123,8 +123,6 @@ Edit `packages/dashboard/.env.local`:
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://<your-project>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
-SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
-NEXT_PUBLIC_SITE_ID=my-site
 ```
 
 Start the dashboard:
@@ -133,7 +131,7 @@ Start the dashboard:
 npm run dev:dashboard
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Sign up for an account, create a site, and start viewing your analytics.
 
 ## Packages
 
@@ -275,19 +273,44 @@ export class ClickHouseBackend implements AnalyticsBackend {
 
 ## Self-Hosting
 
-The dashboard is a standard Next.js application. Deploy it anywhere:
+The dashboard is a statically exported Next.js app. Deploy it anywhere that serves static files:
 
+- **DigitalOcean App Platform**: See [DigitalOcean Deployment](#digitalocean-deployment) below
 - **Vercel**: `cd packages/dashboard && vercel`
-- **Docker**: Build with the included Next.js Dockerfile support
-- **Node.js**: `npm run build:dashboard && npm run start -w packages/dashboard`
+- **Any static host / CDN**: Build with `npm run build:dashboard`, then serve the `packages/dashboard/out/` directory
+- **Local preview**: `npm run build:dashboard && npm run start -w packages/dashboard`
 
 The tracker script can be served from any CDN or your own infrastructure.
+
+## DigitalOcean Deployment
+
+The repository includes a `.do/app.yaml` spec for deploying the dashboard as a static site on DigitalOcean App Platform.
+
+### Steps
+
+1. Fork / push this repo to GitHub.
+
+2. In the [DigitalOcean App Platform console](https://cloud.digitalocean.com/apps), click **Create App** and connect your repository.
+
+3. DigitalOcean will detect `.do/app.yaml` automatically. Set the required environment variables:
+
+   | Variable | Value |
+   |---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon/public key |
+
+4. Deploy. The dashboard will be built as a static export and served via DigitalOcean's CDN.
+
+5. Enable Supabase Auth email confirmations and add your DigitalOcean app URL to Supabase's **Redirect URLs** in Authentication settings.
+
+The `catchall_document: index.html` in the app spec ensures SPA client-side routing works correctly.
 
 ## Security Considerations
 
 - The **ingestion endpoint** accepts writes from the anon key (public). This is by design -- the tracker runs in users' browsers.
-- The **dashboard** should use the service role key (private, server-side only) for read access.
+- The **dashboard** uses Supabase Auth with the anon key. Users sign in with email/password and all queries are scoped to their sites via RPC membership guards.
 - Row Level Security (RLS) is enabled on all tables. The anon role can only insert; reading requires the authenticated or service_role.
+- All RPC functions verify site membership before returning data -- users can only access sites they belong to.
 - All input is sanitized and length-limited in the Edge Function.
 - The tracker never collects PII by default. No cookies, no IP logging, no fingerprinting.
 

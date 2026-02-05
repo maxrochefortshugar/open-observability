@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { TimeRangeOption } from '@/types';
+import type { Site } from '@/hooks/useSites';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { Header } from '@/components/layout/Header';
 import { StatCard } from '@/components/common/StatCard';
@@ -16,9 +17,19 @@ import { formatNumber, formatPercentage } from '@/lib/format';
 
 interface DashboardProps {
   siteId: string;
+  sites: Site[];
+  selectedSiteId: string | null;
+  onSelectSite: (siteId: string) => void;
+  onCreateSite: (siteId: string, name: string) => Promise<void>;
 }
 
-export function Dashboard({ siteId }: DashboardProps) {
+export function Dashboard({
+  siteId,
+  sites,
+  selectedSiteId,
+  onSelectSite,
+  onCreateSite,
+}: DashboardProps) {
   const [timeRange, setTimeRange] = useState<TimeRangeOption>('24h');
   const { data, loading, error } = useAnalytics(siteId, timeRange);
 
@@ -27,7 +38,15 @@ export function Dashboard({ siteId }: DashboardProps) {
 
   return (
     <div className="min-h-screen">
-      <Header siteId={siteId} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
+      <Header
+        siteId={siteId}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
+        sites={sites}
+        selectedSiteId={selectedSiteId}
+        onSelectSite={onSelectSite}
+        onCreateSite={onCreateSite}
+      />
 
       <main className="mx-auto max-w-7xl px-6 py-8">
         {error && (

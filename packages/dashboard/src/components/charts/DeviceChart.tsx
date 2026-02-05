@@ -64,9 +64,9 @@ export function DeviceChart({ data }: DeviceChartProps) {
               borderRadius: '8px',
               fontSize: '13px',
             }}
-            formatter={(value: number, _name: string, props: { payload: { percentage: number } }) => [
-              `${value.toLocaleString()} (${formatPercentage(props.payload.percentage)})`,
-              props.payload && 'Visits',
+            formatter={(value: number, _name: string, props: { payload?: { percentage: number } }) => [
+              `${value.toLocaleString()}${props.payload ? ` (${formatPercentage(props.payload.percentage)})` : ''}`,
+              'Visits',
             ]}
           />
           <Legend

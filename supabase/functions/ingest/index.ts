@@ -18,7 +18,7 @@
  * }
  */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // CORS headers for cross-origin tracker requests
 const corsHeaders = {

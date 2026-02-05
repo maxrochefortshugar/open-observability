@@ -1,5 +1,4 @@
-[project]
-id = "open-observability"
+project_id = "open-observability"
 
 [api]
 port = 54321
@@ -10,3 +9,12 @@ port = 54322
 
 [studio]
 port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = []
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
